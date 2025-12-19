@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,29 +20,35 @@ interface Product {
   category: string;
 }
 
+interface CartItem extends Product {
+  quantity: number;
+}
+
 const products: Product[] = [
-  { id: 1, name: 'Кокосовое масло', description: 'Натуральное масло для волос и кожи', price: 599, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3fc0275f-5b9c-44cf-a8b3-c13746f30395.jpg', category: 'cosmetics' },
-  { id: 2, name: 'Тайская маска для лица', description: 'С экстрактом лотоса и риса', price: 450, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3fc0275f-5b9c-44cf-a8b3-c13746f30395.jpg', category: 'cosmetics' },
-  { id: 3, name: 'Бальзам Tiger Balm', description: 'Красный бальзам для мышц', price: 350, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3fc0275f-5b9c-44cf-a8b3-c13746f30395.jpg', category: 'cosmetics' },
-  { id: 4, name: 'Мангустиновое мыло', description: 'Антибактериальное натуральное мыло', price: 250, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3fc0275f-5b9c-44cf-a8b3-c13746f30395.jpg', category: 'cosmetics' },
-  { id: 5, name: 'Скраб для тела', description: 'С ароматом жасмина и цветов', price: 550, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3fc0275f-5b9c-44cf-a8b3-c13746f30395.jpg', category: 'cosmetics' },
+  { id: 1, name: 'Кокосовое масло', description: 'Натуральное масло для волос и кожи', price: 599, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/ea3d3bd2-1015-4061-ab20-a02b90067ffb.jpg', category: 'cosmetics' },
+  { id: 2, name: 'Тайская маска для лица', description: 'С экстрактом лотоса и риса', price: 450, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/456a8ae5-24c9-42d1-bb96-dcdfee00a45a.jpg', category: 'cosmetics' },
+  { id: 3, name: 'Бальзам Tiger Balm', description: 'Красный бальзам для мышц', price: 350, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3eb95115-1248-4e28-bf50-639a1c7ec617.jpg', category: 'cosmetics' },
+  { id: 4, name: 'Мангустиновое мыло', description: 'Антибактериальное натуральное мыло', price: 250, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/d4bc5358-adcf-4ba2-a3c6-ec70b578ff53.jpg', category: 'cosmetics' },
+  { id: 5, name: 'Скраб для тела', description: 'С ароматом жасмина и цветов', price: 550, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/9ab976cb-9e89-4eeb-81f3-40e0620ed887.jpg', category: 'cosmetics' },
   
-  { id: 6, name: 'Том Ям паста', description: 'Классическая паста для супа', price: 299, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'spices' },
-  { id: 7, name: 'Тайский базилик', description: 'Сушёный базилик высшего качества', price: 199, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'spices' },
-  { id: 8, name: 'Кафир-лайм листья', description: 'Ароматные листья для карри', price: 249, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'spices' },
-  { id: 9, name: 'Набор специй', description: 'Полный набор для тайской кухни', price: 899, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'spices' },
-  { id: 10, name: 'Галангал корень', description: 'Молотый корень для супов', price: 349, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'spices' },
+  { id: 6, name: 'Том Ям паста', description: 'Классическая паста для супа', price: 299, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/25c7523a-1d8e-4039-9adb-a6414302c1d7.jpg', category: 'spices' },
+  { id: 7, name: 'Тайский базилик', description: 'Сушёный базилик высшего качества', price: 199, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/fc6ebcf2-84d1-46c3-97da-d71426e9368c.jpg', category: 'spices' },
+  { id: 8, name: 'Кафир-лайм листья', description: 'Ароматные листья для карри', price: 249, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/3d44d00f-5956-4f1b-8180-7539a2feec96.jpg', category: 'spices' },
+  { id: 9, name: 'Набор специй', description: 'Полный набор для тайской кухни', price: 899, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29b1d78d-53b5-45e3-a402-dbd49049feed.jpg', category: 'spices' },
+  { id: 10, name: 'Галангал корень', description: 'Молотый корень для супов', price: 349, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/4e37edc0-e814-4ea8-a180-4c073b0c31d9.jpg', category: 'spices' },
   
-  { id: 11, name: 'Статуэтка Будды', description: 'Бронзовая статуэтка 15 см', price: 1499, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'souvenirs' },
-  { id: 12, name: 'Тайский веер', description: 'Расписной веер ручной работы', price: 699, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'souvenirs' },
-  { id: 13, name: 'Слон из дерева', description: 'Резная фигурка из тикового дерева', price: 1299, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'souvenirs' },
-  { id: 14, name: 'Ловец снов', description: 'Традиционный тайский оберег', price: 799, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'souvenirs' },
-  { id: 15, name: 'Шёлковый платок', description: 'Натуральный шёлк с узорами', price: 2499, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/29d0885b-5416-452b-8e83-b9b4755ac18b.jpg', category: 'souvenirs' },
+  { id: 11, name: 'Статуэтка Будды', description: 'Бронзовая статуэтка 15 см', price: 1499, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/a84eb34c-99c9-4926-9b6f-c1fa2c9eb4d8.jpg', category: 'souvenirs' },
+  { id: 12, name: 'Тайский веер', description: 'Расписной веер ручной работы', price: 699, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/4a9a2ec7-9a5f-471f-9d21-047e25d4ef3e.jpg', category: 'souvenirs' },
+  { id: 13, name: 'Слон из дерева', description: 'Резная фигурка из тикового дерева', price: 1299, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/52dc6c56-f4a0-4557-b76d-5b757f485747.jpg', category: 'souvenirs' },
+  { id: 14, name: 'Ловец снов', description: 'Традиционный тайский оберег', price: 799, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/8c8fdc66-0e23-45f0-bb58-8192b28452e6.jpg', category: 'souvenirs' },
+  { id: 15, name: 'Шёлковый платок', description: 'Натуральный шёлк с узорами', price: 2499, image: 'https://cdn.poehali.dev/projects/b756d888-7350-4673-9e15-626462b2612a/files/bf1b826b-ea14-4938-bc9e-8e2f9b9abc19.jpg', category: 'souvenirs' },
 ];
 
 const Index = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { toast } = useToast();
 
   const filteredProducts = activeCategory === 'all' 
@@ -50,6 +58,48 @@ const Index = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const addToCart = (product: Product) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+    toast({
+      title: "Товар добавлен!",
+      description: `${product.name} добавлен в корзину`,
+    });
+  };
+
+  const removeFromCart = (productId: number) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId: number, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    setCart(prevCart =>
+      prevCart.map(item =>
+        item.id === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  };
+
+  const getTotalItems = () => {
+    return cart.reduce((sum, item) => sum + item.quantity, 0);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -83,9 +133,107 @@ const Index = () => {
                 </button>
               ))}
             </nav>
-            <Button size="sm" className="md:hidden">
-              <Icon name="Menu" size={20} />
-            </Button>
+            <div className="flex items-center gap-3">
+              <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+                <SheetTrigger asChild>
+                  <Button size="sm" variant="outline" className="relative">
+                    <Icon name="ShoppingCart" size={20} />
+                    {getTotalItems() > 0 && (
+                      <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                        {getTotalItems()}
+                      </Badge>
+                    )}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle className="text-2xl">Корзина</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-8 space-y-4">
+                    {cart.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Icon name="ShoppingCart" size={64} className="mx-auto text-muted-foreground mb-4" />
+                        <p className="text-lg text-muted-foreground">Корзина пуста</p>
+                      </div>
+                    ) : (
+                      <>
+                        {cart.map((item) => (
+                          <Card key={item.id}>
+                            <CardContent className="p-4">
+                              <div className="flex gap-4">
+                                <img 
+                                  src={item.image} 
+                                  alt={item.name}
+                                  className="w-20 h-20 object-cover rounded-lg"
+                                />
+                                <div className="flex-1">
+                                  <h4 className="font-semibold mb-1">{item.name}</h4>
+                                  <p className="text-sm text-muted-foreground mb-2">{item.price} ₽</p>
+                                  <div className="flex items-center gap-2">
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                    >
+                                      <Icon name="Minus" size={14} />
+                                    </Button>
+                                    <span className="w-8 text-center font-medium">{item.quantity}</span>
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                    >
+                                      <Icon name="Plus" size={14} />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="ml-auto text-destructive"
+                                      onClick={() => removeFromCart(item.id)}
+                                    >
+                                      <Icon name="Trash2" size={16} />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                        <Separator className="my-4" />
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-lg">
+                            <span>Товаров:</span>
+                            <span className="font-semibold">{getTotalItems()} шт</span>
+                          </div>
+                          <div className="flex justify-between text-2xl font-bold">
+                            <span>Итого:</span>
+                            <span className="text-primary">{getTotalPrice()} ₽</span>
+                          </div>
+                        </div>
+                        <Button 
+                          className="w-full mt-6" 
+                          size="lg"
+                          onClick={() => {
+                            toast({
+                              title: "Спасибо за заказ!",
+                              description: "Мы свяжемся с вами для подтверждения.",
+                            });
+                            setCart([]);
+                            setIsCartOpen(false);
+                          }}
+                        >
+                          Оформить заказ
+                          <Icon name="ArrowRight" size={20} className="ml-2" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+              <Button size="sm" className="md:hidden">
+                <Icon name="Menu" size={20} />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -167,7 +315,7 @@ const Index = () => {
                     </CardHeader>
                     <CardFooter className="flex justify-between items-center">
                       <span className="text-2xl font-bold text-primary">{product.price} ₽</span>
-                      <Button>
+                      <Button onClick={() => addToCart(product)}>
                         <Icon name="ShoppingCart" size={18} className="mr-2" />
                         В корзину
                       </Button>
